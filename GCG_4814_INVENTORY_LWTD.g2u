@@ -1,0 +1,367 @@
+Program.Sub.ScreenSU.Start
+Gui.F_LWTD..Create
+Gui.F_LWTD..Caption("")
+Gui.F_LWTD..Size(2970,5025)
+Gui.F_LWTD..MinX(0)
+Gui.F_LWTD..MinY(0)
+Gui.F_LWTD..Position(0,0)
+Gui.F_LWTD..BackColor(-2147483633)
+Gui.F_LWTD..MousePointer(0)
+Gui.F_LWTD..Sizeable(False)
+Gui.F_LWTD..Event(UnLoad,Unload)
+Gui.F_LWTD.lbl1.Create(Label,"Length (mm)",True,1935,255,0,60,210,True,0,"Arial",9,-2147483633,0)
+Gui.F_LWTD.txtLength.Create(TextBox,"",True,2505,315,0,90,420,True,0,"Arial",9,-2147483643,1)
+Gui.F_LWTD.txtLength.NumericOnly(1)
+Gui.F_LWTD.txtLength.Event(LostFocus,txtLength_Check)
+Gui.F_LWTD.lbl2.Create(Label,"Width (mm)",True,1935,255,0,60,1110,True,0,"Arial",9,-2147483633,0)
+Gui.F_LWTD.txtWidth.Create(TextBox,"",True,2505,315,0,90,1320,True,0,"Arial",9,-2147483643,1)
+Gui.F_LWTD.txtWidth.NumericOnly(1)
+Gui.F_LWTD.txtWidth.Event(LostFocus,txtWidth_Check)
+Gui.F_LWTD.lbl3.Create(Label,"Thickness (mm)",True,1935,255,0,60,2010,True,0,"Arial",9,-2147483633,0)
+Gui.F_LWTD.txtThickness.Create(TextBox,"",True,2505,315,0,90,2220,True,0,"Arial",9,-2147483643,1)
+Gui.F_LWTD.txtThickness.NumericOnly(1)
+Gui.F_LWTD.txtThickness.Event(LostFocus,txtThickness_Check)
+Gui.F_LWTD.lbl4.Create(Label,"Density",True,1935,255,0,60,2910,True,0,"Arial",9,-2147483633,0)
+Gui.F_LWTD.txtDensity.Create(TextBox,"",True,2505,315,0,90,3120,True,0,"Arial",9,-2147483643,1)
+Gui.F_LWTD.txtDensity.NumericOnly(1)
+Gui.F_LWTD.txtDensity.Event(LostFocus,txtDensity_Check)
+Gui.F_LWTD.cmdSave.Create(Button)
+Gui.F_LWTD.cmdSave.Size(2100,585)
+Gui.F_LWTD.cmdSave.Position(90,3750)
+Gui.F_LWTD.cmdSave.Caption("Save")
+Gui.F_LWTD.cmdSave.FontSize(9)
+Gui.F_LWTD.cmdSave.Event(Click,cmdSave_Click)
+Gui.RO_LWT..Create
+Gui.RO_LWT..Size(2970,5025)
+Gui.RO_LWT..MinX(0)
+Gui.RO_LWT..MinY(0)
+Gui.RO_LWT..Position(0,0)
+Gui.RO_LWT..BackColor(-2147483633)
+Gui.RO_LWT..MousePointer(0)
+Gui.RO_LWT..Event(UnLoad,RO_LWT_UnLoad)
+Gui.RO_LWT..Caption("")
+Gui.RO_LWT..AlwaysOnTop(True)
+Gui.RO_LWT.LblLen.Create(Label,"Length(mm)",True,2550,345,0,105,1680,True,0,"Arial",12,-2147483633,0)
+Gui.RO_LWT.LblLen.FontStyle(True,False,False,False,False)
+Gui.RO_LWT.lblLenV.Create(Label,"",True,2550,345,0,105,2055,True,0,"Arial",12,16777215,1)
+Gui.RO_LWT.lblLenV.BorderStyle(2)
+Gui.RO_LWT.lblWid.Create(Label,"Width(mm)",True,2550,345,0,105,2490,True,0,"Arial",12,-2147483633,0)
+Gui.RO_LWT.lblWid.FontStyle(True,False,False,False,False)
+Gui.RO_LWT.lbWidV.Create(Label,"",True,2550,345,0,105,2850,True,0,"Arial",12,16777215,1)
+Gui.RO_LWT.lbWidV.BorderStyle(2)
+Gui.RO_LWT.lblThk.Create(Label,"Thickness(mm)",True,2550,345,0,105,3330,True,0,"Arial",12,-2147483633,0)
+Gui.RO_LWT.lblThk.FontStyle(True,False,False,False,False)
+Gui.RO_LWT.lblThkV.Create(Label,"",True,2550,345,0,105,3705,True,0,"Arial",12,16777215,1)
+Gui.RO_LWT.lblThkV.BorderStyle(2)
+Gui.RO_LWT.lblPN.Create(Label,"Part",True,2550,345,0,105,120,True,0,"Arial",12,-2147483633,0)
+Gui.RO_LWT.lblPN.FontStyle(True,False,False,False,False)
+Gui.RO_LWT.lblPNV.Create(Label,"",True,2550,345,0,105,510,True,0,"Arial",12,-2147483633,1)
+Gui.RO_LWT.lblLoc.Create(Label,"Location",True,2550,345,0,105,915,True,0,"Arial",12,-2147483633,0)
+Gui.RO_LWT.lblLoc.FontStyle(True,False,False,False,False)
+Gui.RO_LWT.lblLocV.Create(Label,"",True,2550,345,0,105,1290,True,0,"Arial",12,-2147483633,1)
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+V.Global.sTable.Declare("GAB_4814_INV_LWTD")
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+F.Intrinsic.Control.Try
+'TJS. DEC 2019
+'Modified program to allow users to view part dimensions from the GUI. Additionally, added error checking and form icons.  Project renamed to GCG_4814_INVENTORY_LWTD.  Changes commented as GCG_4814 throughout.
+'New Hooks:  15770 (GUI Script 2 Button), 15710 (GUI Populate)
+
+V.Local.bExist.Declare
+V.Local.sIcon.Declare
+V.Local.sPart.Declare
+V.Local.sSQL.Declare
+V.Local.sLocation.Declare
+V.Local.sRev.Declare
+V.Local.sText.Declare
+
+F.Intrinsic.Control.If(V.Caller.Hook,=,10120)
+	V.Passed.000068.Set("Custom Size")
+F.Intrinsic.Control.ElseIf(V.Caller.Hook,=,10210)
+	F.ODBC.Connection!conx.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+		
+	F.ODBC.Connection!conx.TableExists("GAB_4814_INV_LWTD",V.Local.bExist)
+	F.Intrinsic.Control.If(V.Local.bExist,=,False)
+		F.ODBC.Connection!conx.Execute("create table GAB_4814_INV_LWTD (PART CHAR(20), LOCATION CHAR(2), LENGTH NUMERIC(5,2), WIDTH NUMERIC(5,2), THICKNESS NUMERIC(5,2), DENSITY NUMERIC(5,2));")
+	F.Intrinsic.Control.EndIf
+	
+	V.Local.sPart.Set(V.Passed.000007)
+'GCG_4814 - Moved to SetIcon sub
+	'F.Intrinsic.String.Build("{0}\ART\gss2.ico",V.Caller.GlobalDir,v.Local.sIcon)
+	'Gui.F_LWTD..Icon(V.Local.sIcon)
+	F.Intrinsic.Control.If(V.Caller.Switches,=,"V")
+		Gui.F_LWTD.txtDensity.Locked(True)
+		Gui.F_LWTD.txtLength.Locked(True)
+		Gui.F_LWTD.txtThickness.Locked(True)
+		Gui.F_LWTD.txtWidth.Locked(True)
+	F.Intrinsic.Control.ElseIf(V.Caller.Switches,=,"D")
+		Gui.F_LWTD.txtDensity.Locked(True)
+		Gui.F_LWTD.txtLength.Locked(True)
+		Gui.F_LWTD.txtThickness.Locked(True)
+		Gui.F_LWTD.txtWidth.Locked(True)
+	F.Intrinsic.Control.EndIf
+	
+	F.Intrinsic.Control.If(V.Local.sPart.Trim,=,"")
+		F.Intrinsic.UI.Msgbox("Please select a part number")
+	F.Intrinsic.Control.Else
+		V.Local.sRev.Set(V.Passed.000008)
+		V.Local.sLocation.Set(V.Passed.000009)
+		F.Intrinsic.String.GSSPartString(V.Local.sPart,V.Local.sRev,V.Local.sPart)
+		F.Intrinsic.String.Build("select length, width, thickness, density from GAB_4814_INV_LWTD where part = '{0}' and location = '{1}'",V.Local.sPart.Trim,V.Local.sLocation.Trim,V.Local.sSQL)
+		F.ODBC.Connection!conx.OpenLocalRecordsetRO("rst",V.Local.sSQL)
+		F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,False)
+			F.Intrinsic.String.Format(V.ODBC.conx!rst.FieldVal!length,"#,0.00",V.Local.sText)
+			Gui.F_LWTD.txtLength.Text(V.Local.sText)
+			F.Intrinsic.String.Format(V.ODBC.conx!rst.FieldVal!width,"#,0.00",V.Local.sText)
+			Gui.F_LWTD.txtWidth.Text(V.Local.sText)
+			F.Intrinsic.String.Format(V.ODBC.conx!rst.FieldVal!thickness,"#,0.00",V.Local.sText)
+			Gui.F_LWTD.txtThickness.Text(V.Local.sText)
+			F.Intrinsic.String.Format(V.ODBC.conx!rst.FieldVal!density,"#,0.00",V.Local.sText)
+			Gui.F_LWTD.txtDensity.Text(V.Local.sText)
+		F.Intrinsic.Control.EndIf
+		F.ODBC.conx!rst.Close
+		F.Intrinsic.Control.CallSub(SetIcon)
+		Gui.F_LWTD..Show
+	F.Intrinsic.Control.EndIf
+'GCG_4814
+F.Intrinsic.Control.ElseIf(V.Caller.Hook,=,15770)
+	F.Intrinsic.Control.CallSub(GuiView)
+F.Intrinsic.Control.ElseIf(V.Caller.Hook,=,15710)
+	Variable.passed.000020.set("LWT")
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(Error,"SubRoutine",V.Ambient.CurrentSubroutine,"eNumber",V.Ambient.ErrorNumber,"eDescription",V.Ambient.ErrorDescription)
+F.Intrinsic.Control.EndTry
+Program.Sub.Main.End
+
+Program.Sub.GuiView.Start
+'GCG_4814
+F.Intrinsic.Control.Try
+V.Local.sLWT.Declare
+V.Local.sPrtLoc.Declare
+
+F.Intrinsic.Control.If(V.Passed.009990.Trim,=,"")
+	F.Intrinsic.UI.Msgbox("Please select a valid work order","No WO Selected")
+	F.Intrinsic.Control.End
+F.Intrinsic.Control.EndIf
+
+F.ODBC.Connection!conts.OpenCompanyConnection
+
+F.Intrinsic.String.Build("select RTrim(PART) as PART,RTRIM(LOCATION) as LOCN from V_JOB_HEADER where JOB = '{0}' and SUFFIX = '{1}'",V.Passed.009990.Trim,V.Passed.009991.Trim,V.Local.sPrtLoc)
+
+F.ODBC.Connection!conts.ExecuteAndReturn(V.Local.sPrtLoc,V.Local.sPrtLoc)
+
+F.Intrinsic.Control.If(V.Ambient.ExecuteAndReturnEOF)
+	F.ODBC.Connection!conts.Close
+F.Intrinsic.Control.Else
+	F.Intrinsic.String.Split(V.Local.sPrtLoc,"*!*",V.Local.sPrtLoc)
+	F.Intrinsic.Control.If(V.Local.sPrtLoc(1).Trim,=,"00")
+		V.Local.sPrtLoc(1).Set("")
+	F.Intrinsic.Control.EndIf
+	F.Intrinsic.String.Build("Select RTRIM(LENGTH) as LENGTH,RTRIM(WIDTH) as WIDTH, RTRIM(THICKNESS) as THICKNESS from GAB_4814_INV_LWTD where PART = '{0}' and LOCATION = '{1}'",V.Local.sPrtLoc(0).Trim,V.Local.sPrtLoc(1).Trim,V.Local.sLWT)
+	F.ODBC.Connection!conts.ExecuteAndReturn(V.Local.sLWT,V.Local.sLWT)
+	F.Intrinsic.Control.If(V.Ambient.ExecuteAndReturnEOF)
+		F.Intrinsic.UI.Msgbox("No dimensions on file for this part", "Note")
+	F.Intrinsic.Control.Else
+		F.Intrinsic.String.Split(V.Local.sLWT,"*!*",V.Local.sLWT)
+		Gui.RO_LWT.lblPNV.Caption(V.Local.sPrtLoc(0))
+		Gui.RO_LWT.lblLocV.Caption(V.Local.sPrtLoc(1))
+		Gui.RO_LWT.lblLenV.Caption(V.Local.sLWT(0))
+		Gui.RO_LWT.lbWidV.Caption(V.Local.sLWT(1))
+		Gui.RO_LWT.lblThkV.Caption(V.Local.sLWT(2))
+		F.Intrinsic.Control.CallSub(SetIcon)
+		Gui.RO_LWT..Show
+	F.Intrinsic.Control.EndIf
+	F.ODBC.Connection!conts.Close
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(Error,"SubRoutine",V.Ambient.CurrentSubroutine,"eNumber",V.Ambient.ErrorNumber,"eDescription",V.Ambient.ErrorDescription)
+F.Intrinsic.Control.EndTry
+Program.Sub.GuiView.End
+
+Program.Sub.RO_LWT_UnLoad.Start
+'GCG_4814
+F.Intrinsic.Control.End
+Program.Sub.RO_LWT_UnLoad.End
+
+Program.Sub.Unload.Start
+F.ODBC.Connection!conx.Close
+F.Intrinsic.Control.End
+Program.Sub.Unload.End
+
+Program.Sub.cmdSave_Click.Start
+F.Intrinsic.Control.Try
+V.Local.fDensity.Declare
+V.Local.fLength.Declare
+V.Local.fThickness.Declare
+V.Local.fWidth.Declare
+V.Local.sDensity.Declare
+V.Local.sLength.Declare
+V.Local.sLocation.Declare
+V.Local.sPart.Declare
+V.Local.sRev.Declare
+V.Local.sSQL.Declare
+V.Local.sThickness.Declare
+V.Local.sWidth.Declare
+
+V.Local.sDensity.Set(V.Screen.F_LWTD!txtDensity.Text)
+V.Local.sLength.Set(V.Screen.F_LWTD!txtLength.Text)
+V.Local.sThickness.Set(V.Screen.F_LWTD!txtThickness.Text)
+V.Local.sWidth.Set(V.Screen.F_LWTD!txtWidth.Text)
+
+'Only save if all fields are not empty
+F.Intrinsic.Control.If(V.Local.sDensity.Trim,<>,"")
+F.Intrinsic.Control.AndIf(V.Local.sLength.Trim,<>,"")
+F.Intrinsic.Control.AndIf(V.Local.sThickness.Trim,<>,"")
+F.Intrinsic.Control.AndIf(V.Local.sWidth.Trim,<>,"")
+	F.Intrinsic.Math.ConvertToFloat(V.Local.sDensity,V.Local.fDensity)
+	F.Intrinsic.Math.ConvertToFloat(V.Local.sLength,V.Local.fLength)
+	F.Intrinsic.Math.ConvertToFloat(V.Local.sThickness,V.Local.fThickness)
+	F.Intrinsic.Math.ConvertToFloat(V.Local.sWidth,V.Local.fWidth)
+	
+	'Get part info
+	V.Local.sPart.Set(V.Passed.000007)
+	V.Local.sRev.Set(V.Passed.000008)
+	V.Local.sLocation.Set(V.Passed.000009)
+	F.Intrinsic.String.GSSPartString(V.Local.sPart,V.Local.sRev,V.Local.sPart)
+	F.Intrinsic.String.RPad(V.Local.sPart," ",20,V.Local.sPart)
+	F.Intrinsic.String.RPad(V.Local.sLocation," ",2,V.Local.sLocation)
+	
+	F.Intrinsic.String.Build("select * from {0} where part = '{1}' and location = '{2}'","GAB_4814_INV_LWTD",V.Local.sPart,V.Local.sLocation,V.Local.sSQL)
+	F.ODBC.Connection!conx.OpenLocalRecordsetRW("rst",V.Local.sSQL)
+	F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,=,True)
+		'Insert new record
+		F.Intrinsic.String.Build("insert into {0}(part,location,length,width,thickness,density) values('{1}','{2}',{3},{4},{5},{6});","GAB_4814_INV_LWTD",V.Local.sPart,V.Local.sLocation,V.Local.fLength,V.Local.fWidth,V.Local.fThickness,V.Local.fDensity,V.Local.sSQL)
+	F.Intrinsic.Control.Else
+		'Update current record
+		F.Intrinsic.String.Build("update {0} set length={3},width={4},thickness={5},density={6} where part='{1}' and location = '{2}';","GAB_4814_INV_LWTD",V.Local.sPart,V.Local.sLocation,V.Local.fLength,V.Local.fWidth,V.Local.fThickness,V.Local.fDensity,V.Local.sSQL)
+	F.Intrinsic.Control.EndIf
+	F.ODBC.Connection!conx.Execute(V.Local.sSQL)
+	F.ODBC.conx!rst.Close
+	F.Intrinsic.Control.CallSub(unload)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(Error,"SubRoutine",V.Ambient.CurrentSubroutine,"eNumber",V.Ambient.ErrorNumber,"eDescription",V.Ambient.ErrorDescription)
+F.Intrinsic.Control.EndTry
+Program.Sub.cmdSave_Click.End
+
+Program.Sub.txtLength_Check.Start
+F.Intrinsic.Control.Try
+V.Local.fText.Declare
+V.Local.sText.Declare
+
+V.Local.sText.Set(V.Screen.F_LWTD!txtLength.Text)
+F.Intrinsic.Control.If(V.Local.sText.Trim,<>,"")
+	F.Intrinsic.Math.ConvertToFloat(V.Local.sText,V.Local.fText)
+	F.Intrinsic.Math.Round(V.Local.fText,2,V.Local.fText)
+	F.Intrinsic.String.Format(V.Local.fText,"#,0.00",V.Local.sText)
+	Gui.F_LWTD.txtLength.Text(V.Local.sText)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(Error,"SubRoutine",V.Ambient.CurrentSubroutine,"eNumber",V.Ambient.ErrorNumber,"eDescription",V.Ambient.ErrorDescription)
+F.Intrinsic.Control.EndTry
+Program.Sub.txtLength_Check.End
+
+Program.Sub.txtWidth_Check.Start
+F.Intrinsic.Control.Try
+V.Local.fText.Declare
+V.Local.sText.Declare
+
+V.Local.sText.Set(V.Screen.F_LWTD!txtWidth.Text)
+F.Intrinsic.Control.If(V.Local.sText.Trim,<>,"")
+	F.Intrinsic.Math.ConvertToFloat(V.Local.sText,V.Local.fText)
+	F.Intrinsic.Math.Round(V.Local.fText,2,V.Local.fText)
+	F.Intrinsic.String.Format(V.Local.fText,"#,0.00",V.Local.sText)
+	Gui.F_LWTD.txtWidth.Text(V.Local.sText)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(Error,"SubRoutine",V.Ambient.CurrentSubroutine,"eNumber",V.Ambient.ErrorNumber,"eDescription",V.Ambient.ErrorDescription)
+F.Intrinsic.Control.EndTry
+Program.Sub.txtWidth_Check.End
+
+Program.Sub.txtThickness_Check.Start
+F.Intrinsic.Control.Try
+V.Local.fText.Declare
+V.Local.sText.Declare
+
+V.Local.sText.Set(V.Screen.F_LWTD!txtThickness.Text)
+F.Intrinsic.Control.If(V.Local.sText.Trim,<>,"")
+	F.Intrinsic.Math.ConvertToFloat(V.Local.sText,V.Local.fText)
+	F.Intrinsic.Math.Round(V.Local.fText,2,V.Local.fText)
+	F.Intrinsic.String.Format(V.Local.fText,"#,0.00",V.Local.sText)
+	Gui.F_LWTD.txtThickness.Text(V.Local.sText)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(Error,"SubRoutine",V.Ambient.CurrentSubroutine,"eNumber",V.Ambient.ErrorNumber,"eDescription",V.Ambient.ErrorDescription)
+F.Intrinsic.Control.EndTry
+Program.Sub.txtThickness_Check.End
+
+Program.Sub.txtDensity_Check.Start
+F.Intrinsic.Control.Try
+V.Local.fText.Declare
+V.Local.sText.Declare
+
+V.Local.sText.Set(V.Screen.F_LWTD!txtDensity.Text)
+F.Intrinsic.Control.If(V.Local.sText.Trim,<>,"")
+	F.Intrinsic.Math.ConvertToFloat(V.Local.sText,V.Local.fText)
+	F.Intrinsic.Math.Round(V.Local.fText,2,V.Local.fText)
+	F.Intrinsic.String.Format(V.Local.fText,"#,0.00",V.Local.sText)
+	Gui.F_LWTD.txtDensity.Text(V.Local.sText)
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(Error,"SubRoutine",V.Ambient.CurrentSubroutine,"eNumber",V.Ambient.ErrorNumber,"eDescription",V.Ambient.ErrorDescription)
+F.Intrinsic.Control.EndTry
+Program.Sub.txtDensity_Check.End
+
+Program.Sub.SetIcon.Start
+'GCG_4814
+F.Intrinsic.Control.Try
+V.Local.sForm.Declare
+V.Local.bExists.Declare
+V.Local.sIcon.Declare
+V.Local.iCounter.Declare
+
+F.Intrinsic.String.Build("{0}\ART\gss2.ico",V.Caller.GlobalDir,v.Local.sIcon)
+F.Intrinsic.File.Exists(V.Local.sIcon, V.Local.bExists)
+F.Intrinsic.Control.If(V.Local.bExists.Not)
+    F.Intrinsic.String.Build("{0}\GAB\GAS\gss2.ico",V.Caller.PluginsDir,v.Local.sIcon)
+    F.Intrinsic.File.Exists(V.Local.sIcon, V.Local.bExists)
+    F.Intrinsic.Control.If(V.Local.bExists.Not)
+        F.Intrinsic.Control.ExitSub
+    F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.UI.GetFormList(V.Local.sForm)
+F.Intrinsic.String.Split(V.Local.sForm, "*!*", V.Local.sForm)
+
+F.Intrinsic.Control.For(V.Local.iCounter, 0, V.Local.sForm.UBound, 1)
+    Gui.[V.Local.sForm(V.Local.iCounter)]..Icon(V.Local.sIcon)
+F.Intrinsic.Control.Next(V.Local.iCounter)
+
+F.Intrinsic.Control.Catch
+	F.Intrinsic.Control.CallSub(Error,"SubRoutine",V.Ambient.CurrentSubroutine,"eNumber",V.Ambient.ErrorNumber,"eDescription",V.Ambient.ErrorDescription)
+F.Intrinsic.Control.EndTry
+Program.Sub.SetIcon.End
+
+Program.Sub.Error.Start
+'GCG_4814
+V.Local.sError.Declare
+V.Local.iRet.Declare
+V.Local.sSep.Declare
+
+F.Intrinsic.String.Build("-------------------------------------------------------------------------------------",,V.Local.sSep)
+F.Intrinsic.String.Build("({5}-{6}){0}{7}{0}Project: {4}{0}{7}{0}Sub: {1}{0}Error: {2}, {3}", V.Ambient.NewLine, V.Args.SubRoutine, V.Args.eNumber, V.Args.eDescription,V.Caller.ScriptFile,V.Ambient.Date, V.Ambient.Time,V.Local.sSep,V.Local.sError)
+F.Intrinsic.UI.Msgbox(V.Local.sError,"Error",V.Local.iRet)
+Program.Sub.Error.End
